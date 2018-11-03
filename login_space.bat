@@ -23,8 +23,6 @@ set widget_address="windows3party\widget.html"
 	REM IMAGEMAGICK:
 set mogrify_exe="windows3party\imagemagick\mogrify.exe"
 set composite_exe="windows3party\imagemagick\composite.exe"
-set convert_exe="windows3party\imagemagick\convert.exe"
-
 
 REM nos saltamos la espera de conexion si hemos elegido imagen random
 if %arg2%==y goto RRAANNDD
@@ -146,4 +144,3 @@ if %arg1%==y (
 :END
 
 if exist %temp%\backgroundDefault.jpg del %temp%\backgroundDefault.jpg
-pause
