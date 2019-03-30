@@ -18,16 +18,16 @@ set resolution=1600x900
 	REM RANDOMIMAGES:
 set random_images_dir=f:\SPACE_IMAGES
 	REM WEATHER:
-set htmlTOpdf_exe="windows3party\wkhtmltoimage.exe"
-set widget_address="windows3party\widget.html"
+set htmlTOpdf_exe="%~dp0\windows3party\wkhtmltoimage.exe"
+set widget_address="%~dp0\windows3party\widget.html"
 	REM IMAGEMAGICK:
-set mogrify_exe="windows3party\imagemagick\mogrify.exe"
-set composite_exe="windows3party\imagemagick\composite.exe"
+set mogrify_exe="%~dp0\windows3party\imagemagick\mogrify.exe"
+set composite_exe="%~dp0\windows3party\imagemagick\composite.exe"
 
 REM nos saltamos la espera de conexion si hemos elegido imagen random
 if %arg2%==y goto RRAANNDD
 REM si no hay conexion usa imagen random (espera 6seg a que arranque la red):
-windows3party\sleep 6
+%~dp0\windows3party\sleep 6
 ping google.com -n 1
 if %errorlevel%==1 set arg2=y
 
@@ -40,7 +40,7 @@ if NOT %arg2% == y GOTO NORAND
 
 SETLOCAL ENABLEDELAYEDEXPANSION
 SET count=1
-FOR /F "tokens=* USEBACKQ" %%F IN (`dir %random_images_dir% /b ^| windows3party\wc -l ^| windows3party\cut -d" " -f5`) DO ( SET total=%%F )
+FOR /F "tokens=* USEBACKQ" %%F IN (`dir %random_images_dir% /b ^| %~dp0\windows3party\wc -l ^| %~dp0\windows3party\cut -d" " -f5`) DO ( SET total=%%F )
 SET /A rand=%RANDOM%%%%total%+1
  echo %rand% && pause
 for /f "tokens=* USEBACKQ" %%f IN (`dir %random_images_dir% /b`) DO ( 
@@ -52,9 +52,9 @@ ENDLOCAL
 
 :NORAND
 if NOT %arg2% == y (
-	windows3party\curl -k https://apod.nasa.gov/apod/astropix.html>%temp%\1.a
+	%~dp0\windows3party\curl -k https://apod.nasa.gov/apod/astropix.html>%temp%\1.a
 	for /f delims^=^"^ tokens^=2 %%# in ('type %temp%\1.a ^| grep "jpg" ^| head -n1') do (
-	 windows3party\curl -k https://apod.nasa.gov/%%#>%temp%\backgroundDefault.jpg
+	 %~dp0\windows3party\curl -k https://apod.nasa.gov/%%#>%temp%\backgroundDefault.jpg
 	)
 	del %temp%\1.a
 	REM Hacemos una copia de las fotos que va sacando cada día:
@@ -65,7 +65,7 @@ REM si no hay imagen salimos
 if not exist %temp%\backgroundDefault.jpg goto END
 
 REM si la imagen no se ha obtenido bien tambien salimos (LSS 5000 es <5kb)
-for /f "tokens=1 delims= " %%# in ('windows3party\wc -c %temp%\backgroundDefault.jpg') do (
+for /f "tokens=1 delims= " %%# in ('%~dp0\windows3party\wc -c %temp%\backgroundDefault.jpg') do (
 	if %%# LSS 5000 (
 		echo imagen erronea o demasiado pequeña
 		goto END
@@ -80,7 +80,7 @@ rem	%mogrify_exe% -resize 75%% %temp%\backgroundDefault.jpg
 rem	%mogrify_exe% -quality 85 %temp%\backgroundDefault.jpg
 
 
- for /f "tokens=1 delims= " %%# in ('windows3party\wc -c %temp%\backgroundDefault.jpg') do (
+ for /f "tokens=1 delims= " %%# in ('%~dp0\windows3party\wc -c %temp%\backgroundDefault.jpg') do (
  	if %%# GTR 256000 (
 		%mogrify_exe% -resize %resolution% %temp%\backgroundDefault.jpg
 	)
@@ -101,22 +101,22 @@ if %arg3%==y (
 
 REM si no es w10 seguimos reduciendo la imagen:
 if NOT %arg1%==y (
- for /f "tokens=1 delims= " %%# in ('windows3party\wc -c %temp%\backgroundDefault.jpg') do (
+ for /f "tokens=1 delims= " %%# in ('%~dp0\windows3party\wc -c %temp%\backgroundDefault.jpg') do (
  	if %%# GTR 256000 (
 		%mogrify_exe% -quality 75 %temp%\backgroundDefault.jpg
 	)
  )
- for /f "tokens=1 delims= " %%# in ('windows3party\wc -c %temp%\backgroundDefault.jpg') do (
+ for /f "tokens=1 delims= " %%# in ('%~dp0\windows3party\wc -c %temp%\backgroundDefault.jpg') do (
  	if %%# GTR 256000 (
 		%mogrify_exe% -quality 65 %temp%\backgroundDefault.jpg
 	)
  )
- for /f "tokens=1 delims= " %%# in ('windows3party\wc -c %temp%\backgroundDefault.jpg') do (
+ for /f "tokens=1 delims= " %%# in ('%~dp0\windows3party\wc -c %temp%\backgroundDefault.jpg') do (
  	if %%# GTR 256000 (
 		%mogrify_exe% -quality 55 %temp%\backgroundDefault.jpg
 	)
  )
- for /f "tokens=1 delims= " %%# in ('windows3party\wc -c %temp%\backgroundDefault.jpg') do (
+ for /f "tokens=1 delims= " %%# in ('%~dp0\windows3party\wc -c %temp%\backgroundDefault.jpg') do (
  	if %%# GTR 256000 (
 		%mogrify_exe% -resize 75%% %temp%\backgroundDefault.jpg
 	)
@@ -129,7 +129,7 @@ if NOT %arg1%==y (
 REM copiamos o metemos la imagen según sea w10 o anterior:
 if %arg1%==y (
 	REM ---Windows 10---:
- windows3party\w10bg.exe /I %temp%\backgroundDefault.jpg
+ %~dp0\windows3party\w10bg.exe /I %temp%\backgroundDefault.jpg
 ) else (
  	REM ---Windows 7 ---:
  if not exist %windir%\System32\oobe\info\backgrounds (
