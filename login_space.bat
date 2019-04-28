@@ -42,7 +42,7 @@ SETLOCAL ENABLEDELAYEDEXPANSION
 SET count=1
 FOR /F "tokens=* USEBACKQ" %%F IN (`dir %random_images_dir% /b ^| %~dp0\windows3party\wc -l ^| %~dp0\windows3party\cut -d" " -f5`) DO ( SET total=%%F )
 SET /A rand=%RANDOM%%%%total%+1
- echo %rand% && pause
+ REM echo %rand% && pause
 for /f "tokens=* USEBACKQ" %%f IN (`dir %random_images_dir% /b`) DO ( 
  if !rand! EQU !count! set rand_img=%%f
  SET /a count=!count!+1
