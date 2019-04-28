@@ -40,7 +40,7 @@ if NOT %arg2% == y GOTO NORAND
 
 SETLOCAL ENABLEDELAYEDEXPANSION
 SET count=1
-FOR /F "tokens=* USEBACKQ" %%F IN (`dir %random_images_dir% /b ^| %~dp0\windows3party\wc -l ^| %~dp0\windows3party\cut -d" " -f5`) DO ( SET total=%%F )
+FOR /F "tokens=* USEBACKQ" %%F IN (`dir %random_images_dir% /b ^| %~dp0\windows3party\wc -l ^| %~dp0\windows3party\sed "s/^[ \t]*//"`) DO ( SET total=%%F )
 SET /A rand=%RANDOM%%%%total%+1
  REM echo %rand% && pause
 for /f "tokens=* USEBACKQ" %%f IN (`dir %random_images_dir% /b`) DO ( 
